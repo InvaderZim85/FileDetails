@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\Show details]
+
+[HKEY_CLASSES_ROOT\*\shell\Show details\command]
+@="D:\\Programs\\FileDetails\\FileDetails.exe %1"

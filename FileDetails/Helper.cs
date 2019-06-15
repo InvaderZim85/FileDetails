@@ -65,7 +65,9 @@ namespace FileDetails
         /// <param name="accessType">The <see cref="PropertyAccessType"/> of the properties (optional, default = Read | Write)</param>
         /// <param name="onlyPublic"><see langword="true"/> to get only public properties, otherwise <see langword="false"/> (optional, default = <see langword="true"/></param>
         /// <returns></returns>
-        public static List<string> GetProperties<T>(T value, PropertyAccessType accessType = PropertyAccessType.Read | PropertyAccessType.Write, bool onlyPublic = true) where T: class
+        public static List<string> GetProperties<T>(T value,
+            PropertyAccessType accessType = PropertyAccessType.Read | PropertyAccessType.Write, bool onlyPublic = true)
+            where T : class
         {
             if (value == null)
                 return new List<string>();
@@ -74,7 +76,7 @@ namespace FileDetails
                 return new List<string>();
 
             List<PropertyInfo> properties;
-            switch ((int)accessType)
+            switch ((int) accessType)
             {
                 case 1:
                     properties = value.GetType().GetProperties().Where(w => w.CanRead).ToList();
@@ -116,11 +118,7 @@ namespace FileDetails
         {
             try
             {
-                var kbLimit = 1024;
-                var mbLimit = 1024 * 1024;
-                var gbLimit = 1024 * 1024 * 1024;
-
-                var size = 0D;
+                var size = 0L;
                 var count = "1";
                 var error = false;
                 switch (info)
@@ -136,16 +134,11 @@ namespace FileDetails
                         break;
                 }
 
-                if (size <= kbLimit)
-                    return ($"{size:N0} bytes", count);
-                if (size > kbLimit && size <= mbLimit)
-                    return ($"{size / kbLimit:N2} KB ({size:N0} bytes)", count);
-                if (size > mbLimit && size <= gbLimit)
-                    return ($"{size / mbLimit:N2} MB ({size:N0} bytes)", count);
-                if (size > gbLimit)
-                    return ($"{size / gbLimit:N2} GB ({size:N0} bytes)", count);
+                var sizeValue = ConvertFileSize(size);
+                if (error)
+                    sizeValue = $"~{size:N0} bytes";
 
-                return ($"{(error ? "~" : "")}{size:N0} bytes", count);
+                return (sizeValue, count);
             }
             catch (Exception)
             {
@@ -154,17 +147,39 @@ namespace FileDetails
         }
 
         /// <summary>
+        /// Converts the file size into a readable format
+        /// </summary>
+        /// <param name="size">The size</param>
+        /// <returns>The readable size</returns>
+        private static string ConvertFileSize(long size)
+        {
+            switch (size)
+            {
+                case var _ when size < 1024:
+                    return $"{size} Bytes";
+                case var _ when size >= 1024 && size < Math.Pow(1024, 2):
+                    return $"{size / 1024:N2} KB";
+                case var _ when size >= Math.Pow(1024, 2) && size < Math.Pow(1024, 3):
+                    return $"{size / Math.Pow(1024, 2):N2} MB";
+                case var _ when size >= Math.Pow(1024, 3):
+                    return $"{size / Math.Pow(1024, 3):N2} GB";
+                default:
+                    return size.ToString();
+            }
+        }
+
+        /// <summary>
         /// Gets the file size for a directory
         /// </summary>
         /// <param name="directory">The directory</param>
         /// <returns>The data</returns>
-        private static (double size, int count, int dirCount, bool error) GetDirectorySizeFileCount(
+        private static (long size, int count, int dirCount, bool error) GetDirectorySizeFileCount(
             DirectoryInfo directory)
         {
             var directories = Directory.GetDirectories(directory.FullName, "*", SearchOption.TopDirectoryOnly);
 
             var error = false;
-            var size = 0D;
+            var size = 0L;
             var fileCount = 0;
             foreach (var dir in directories)
             {
