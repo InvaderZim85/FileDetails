@@ -52,7 +52,7 @@ To add a new entry you've to do the following:
     7. Now you will see the entry in the context menu
 
        ![Context menu](images/004.png)
-3. Add the key for direcotries:
+3. Add the key for directories:
     1. Navigate to `HKEY_CLASSES_ROOT\Directory\shell`
     2. Perform the steps 2.2 - 2.6
 
