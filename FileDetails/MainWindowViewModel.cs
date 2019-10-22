@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
@@ -15,10 +16,16 @@ namespace FileDetails
         /// Contains the file
         /// </summary>
         private FileInfo _file;
+
         /// <summary>
         /// Contains the directory
         /// </summary>
         private DirectoryInfo _directory;
+
+        /// <summary>
+        /// The timer for the info message
+        /// </summary>
+        private readonly Timer _infoTimer = new Timer(5000);
 
         /// <summary>
         /// Backing field for <see cref="IsDirectory"/>
@@ -96,14 +103,65 @@ namespace FileDetails
             : _file?.LastAccessTime.ToString("G") ?? "";
 
         /// <summary>
-        /// Gets the md5 hash of the file
+        /// Backing field for <see cref="Md5"/>
         /// </summary>
-        public string Md5Hash => _file == null ? "" : Helper.GetMd5Hash(_file);
+        private string _md5;
+
+        /// <summary>
+        /// Gets or sets the MD5 hash value
+        /// </summary>
+        public string Md5
+        {
+            get => _md5;
+            set => SetField(ref _md5, value);
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="Sha1"/>
+        /// </summary>
+        private string _sha1;
+
+        /// <summary>
+        /// Gets or sets the SHA1 hash value
+        /// </summary>
+        public string Sha1
+        {
+            get => _sha1;
+            set => SetField(ref _sha1, value);
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="Sha256"/>
+        /// </summary>
+        private string _sha256;
+
+        /// <summary>
+        /// Gets or sets the SHA-256 hash value
+        /// </summary>
+        public string Sha256
+        {
+            get => _sha256;
+            set => SetField(ref _sha256, value);
+        }
 
         /// <summary>
         /// Gets or sets the attributes
         /// </summary>
         public string Attributes => $"{(IsDirectory ? _directory?.Attributes : _file?.Attributes)}";
+
+        /// <summary>
+        /// Backing field for <see cref="Info"/>
+        /// </summary>
+        private string _info;
+
+        /// <summary>
+        /// Gets or sets the info field
+        /// </summary>
+        public string Info
+        {
+            get => _info;
+            set => SetField(ref _info, value);
+        }
 
 
         /// <summary>
@@ -125,6 +183,11 @@ namespace FileDetails
             else
             {
                 _file = new FileInfo(path);
+
+                var (md5, sha1, sha256) = Helper.GetHash(_file);
+                Md5 = md5;
+                Sha1 = sha1;
+                Sha256 = sha256;
             }
 
             var properties = Helper.GetProperties(this, Helper.PropertyAccessType.Read);
@@ -150,11 +213,13 @@ namespace FileDetails
         /// <summary>
         /// The command to copy the data to the clipboard
         /// </summary>
-        public ICommand CopyCommand => new DelegateCommand(CopyToClipboard);
+        public ICommand CopyCommand => new RelayCommand<SaveType>(CopyToClipboard);
+        
         /// <summary>
         /// The command to save the data
         /// </summary>
-        public ICommand SaveCommand => new DelegateCommand(SaveData);
+        public ICommand SaveCommand => new RelayCommand<SaveType>(SaveData);
+
         /// <summary>
         /// The command to close the window
         /// </summary>
@@ -163,28 +228,31 @@ namespace FileDetails
         /// <summary>
         /// Copies the data to the clipboard
         /// </summary>
-        private void CopyToClipboard()
+        /// <param name="type">The type of the file</param>
+        private void CopyToClipboard(SaveType type)
         {
-            Clipboard.SetText(CreateText());
+            Clipboard.SetText(CreateText(type));
+            ShowInfo();
         }
 
         /// <summary>
         /// Saves the data into a file
         /// </summary>
-        private void SaveData()
+        /// <param name="type">The type of the file</param>
+        private void SaveData(SaveType type)
         {
             var dialog = new SaveFileDialog
             {
-                FileName = $"{_file.Name} Details",
-                Filter = "Text (*.txt)|*.txt|All (*.*)|*.*",
-                DefaultExt = ".txt"
+                FileName = $"{FileName.Replace(" ", "_")}-Details",
+                Filter = type == SaveType.Markdown ? "Markdown (*.md)|*.md|All (*.*)|*.*" : "Text (*.txt)|*.txt|All (*.*)|*.*",
+                DefaultExt = type == SaveType.Markdown ? ".md" : ".txt"
             };
 
             if (dialog.ShowDialog() == true)
             {
                 try
                 {
-                    File.WriteAllText(dialog.FileName, CreateText());
+                    File.WriteAllText(dialog.FileName, CreateText(type));
 
                     MessageBox.Show("File saved successfully.", "Save", MessageBoxButton.OK,
                         MessageBoxImage.Information);
@@ -200,22 +268,70 @@ namespace FileDetails
         /// <summary>
         /// Creates the text for the file / clipboard
         /// </summary>
+        /// <param name="type">The type of the file</param>
         /// <returns>The string with the data</returns>
-        private string CreateText()
+        private string CreateText(SaveType type)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"FileName: {FileName}");
-            sb.AppendLine($"Path: {Path}");
-            sb.AppendLine($"Size: {Size}");
-            if (IsDirectory)
-                sb.AppendLine($"Files: {FileCount}");
-            sb.AppendLine($"Creation date: {CreationDate}");
-            sb.AppendLine($"Last write date: {WriteDate}");
-            sb.AppendLine($"Last access date: {AccessDate}");
-            if (IsFile)
-                sb.AppendLine($"MD5 hash: {Md5Hash}");
+
+            if (type == SaveType.Text)
+            {
+                sb.AppendLine($"FileName: {FileName}");
+                sb.AppendLine($"Path: {Path}");
+                sb.AppendLine($"Size: {Size}");
+                if (IsDirectory)
+                    sb.AppendLine($"Files: {FileCount}");
+                sb.AppendLine($"Creation date: {CreationDate}");
+                sb.AppendLine($"Last write date: {WriteDate}");
+                sb.AppendLine($"Last access date: {AccessDate}");
+                if (IsFile)
+                {
+                    sb.AppendLine($"MD5 hash: {Md5}");
+                    sb.AppendLine($"SHA1 hash: {Sha1}");
+                    sb.AppendLine($"SHA-256 hash: {Sha256}");
+                }
+            }
+            else
+            {
+                sb.AppendLine($"# {FileName} details\r\n");
+                sb.AppendLine("## Details\r\n");
+                sb.AppendLine("| Type | Value |");
+                sb.AppendLine("|---|---|");
+                sb.AppendLine($"| Filename | {FileName} |");
+                sb.AppendLine($"| Path | `{Path}` |");
+                sb.AppendLine($"| Size | {Size} |");
+                if (IsDirectory)
+                    sb.AppendLine($"| Files | {FileCount} |");
+                sb.AppendLine($"| Creation date | {CreationDate} |");
+                sb.AppendLine($"| Last write date | {WriteDate} |");
+                sb.AppendLine($" |Last access date | {AccessDate} |");
+                if (IsFile)
+                {
+                    sb.AppendLine($"| MD5 hash | {Md5} |");
+                    sb.AppendLine($"| SHA1 hash | {Sha1} |");
+                    sb.AppendLine($"| SHA-256 hash | {Sha256} |");
+                }
+            }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Shows the info
+        /// </summary>
+        private void ShowInfo()
+        {
+            if (_infoTimer.Enabled)
+                return;
+
+            _infoTimer.Start();
+            Info = "Infos copied...";
+
+            _infoTimer.Elapsed += (o, s) =>
+            {
+                _infoTimer.Stop();
+                Info = "";
+            };
         }
     }
 }

@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
-using System.Xml.Serialization.Advanced;
 
 namespace FileDetails
 {
@@ -32,29 +30,68 @@ namespace FileDetails
         }
 
         /// <summary>
-        /// Gets the md5 hash of the provided file
+        /// Gets the hash of the given file according to the given type
         /// </summary>
         /// <param name="file">The file</param>
-        /// <returns>The md5 hash</returns>
-        public static string GetMd5Hash(FileInfo file)
+        /// <returns>the hash value</returns>
+        public static (string md5, string sha1, string sha256) GetHash(FileInfo file)
         {
             if (file == null)
-                return "";
-
+                return ("", "", "");
             try
             {
-                using (var md5 = MD5.Create())
+                using (var stream = File.OpenRead(file.FullName))
                 {
-                    using (var stream = File.OpenRead(file.FullName))
-                    {
-                        var hash = md5.ComputeHash(stream);
-                        return BitConverter.ToString(hash);
-                    }
+                    var md5 = GetMd5Hash(stream);
+                    var sha1 = GetSha1Hash(stream);
+                    var sha256 = GetSha256Hash(stream);
+
+                    return (BitConverter.ToString(md5).Replace("-", ""), BitConverter.ToString(sha1).Replace("-", ""),
+                        BitConverter.ToString(sha256).Replace("-", ""));
                 }
             }
-            catch (Exception)
+            catch
             {
-                return "";
+                return ("", "", "");
+            }
+        }
+
+        /// <summary>
+        /// Computes the SHA-256 hash for the given stream
+        /// </summary>
+        /// <param name="stream">The file stream</param>
+        /// <returns>The hash bytes</returns>
+        private static byte[] GetMd5Hash(Stream stream)
+        {
+            using (var md5 = MD5.Create())
+            {
+                return md5.ComputeHash(stream);
+            }
+        }
+
+        /// <summary>
+        /// Computes the SHA-256 hash for the given stream
+        /// </summary>
+        /// <param name="stream">The file stream</param>
+        /// <returns>The hash bytes</returns>
+        private static byte[] GetSha1Hash(FileStream stream)
+        {
+            using (var sha = new SHA1Managed())
+            {
+                return sha.ComputeHash(stream);
+            }
+        }
+
+        /// <summary>
+        /// Computes the SHA-256 hash for the given stream
+        /// </summary>
+        /// <param name="stream">The file stream</param>
+        /// <returns>The hash bytes</returns>
+        private static byte[] GetSha256Hash(Stream stream)
+        {
+            using (var sha = new SHA256Managed())
+            {
+                return sha.ComputeHash(stream);
             }
         }
 
@@ -176,25 +213,26 @@ namespace FileDetails
         private static (long size, int count, int dirCount, bool error) GetDirectorySizeFileCount(
             DirectoryInfo directory)
         {
-            var directories = Directory.GetDirectories(directory.FullName, "*", SearchOption.TopDirectoryOnly);
+            // Get the files of the main folder
+            var mainFiles = directory.GetFiles("*.*", SearchOption.AllDirectories);
+            var fileCount = mainFiles.Length;
+            var size = 0L;
 
             var error = false;
-            var size = 0L;
-            var fileCount = 0;
-            foreach (var dir in directories)
+
+            foreach (var file in mainFiles)
             {
                 try
                 {
-                    var files = Directory.GetFiles(dir, "*", SearchOption.AllDirectories);
-                    fileCount += files.Length;
-
-                    Parallel.ForEach(files, file => { size += new FileInfo(file).Length; });
+                    size += file.Length;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     error = true;
                 }
             }
+
+            var directories = Directory.GetDirectories(directory.FullName, "*", SearchOption.AllDirectories);
 
             return (size, fileCount, directories.Length, error);
         }
