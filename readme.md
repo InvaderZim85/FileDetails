@@ -25,13 +25,13 @@ When you're showing the details for a file you can also compare the hash values.
 
 ![Compare](images/010.png)
 
+> **Note** The comparision of the hash values is case insensitive 
+
 **Directory**
 
 ![Context menu dir](images/005.png)
 
 ![Details dir](images/011.png)
-
-
 
 
 
