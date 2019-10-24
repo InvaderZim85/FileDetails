@@ -38,6 +38,12 @@ namespace FileDetails
         {
             if (file == null)
                 return ("", "", "");
+
+            string ConvertToString(byte[] byteArray)
+            {
+                return BitConverter.ToString(byteArray).Replace("-", "").ToLower();
+            }
+
             try
             {
                 using (var stream = File.OpenRead(file.FullName))
@@ -46,8 +52,8 @@ namespace FileDetails
                     var sha1 = GetSha1Hash(stream);
                     var sha256 = GetSha256Hash(stream);
 
-                    return (BitConverter.ToString(md5).Replace("-", ""), BitConverter.ToString(sha1).Replace("-", ""),
-                        BitConverter.ToString(sha256).Replace("-", ""));
+                    return (ConvertToString(md5), ConvertToString(sha1),
+                        ConvertToString(sha256));
                 }
             }
             catch
@@ -74,7 +80,7 @@ namespace FileDetails
         /// </summary>
         /// <param name="stream">The file stream</param>
         /// <returns>The hash bytes</returns>
-        private static byte[] GetSha1Hash(FileStream stream)
+        private static byte[] GetSha1Hash(Stream stream)
         {
             using (var sha = new SHA1Managed())
             {
@@ -226,7 +232,7 @@ namespace FileDetails
                 {
                     size += file.Length;
                 }
-                catch (Exception e)
+                catch
                 {
                     error = true;
                 }

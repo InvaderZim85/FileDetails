@@ -201,17 +201,19 @@
                 Grid.Column="1"
                 Width="70"
                 Margin="3"
+                Command="{Binding CopyCommand}"
+                CommandParameter="{x:Static local:SaveType.Text}"
                 Content="Copy">
                 <xctk:SplitButton.DropDownContent>
                     <StackPanel>
                         <MenuItem
                             Command="{Binding CopyCommand}"
                             CommandParameter="{x:Static local:SaveType.Text}"
-                            Header="Copy as txt file" />
+                            Header="Copy as text" />
                         <MenuItem
                             Command="{Binding CopyCommand}"
                             CommandParameter="{x:Static local:SaveType.Markdown}"
-                            Header="Copy as md file" />
+                            Header="Copy as markdown" />
                     </StackPanel>
                 </xctk:SplitButton.DropDownContent>
             </xctk:SplitButton>
@@ -219,6 +221,8 @@
                 Grid.Column="2"
                 Width="70"
                 Margin="3"
+                Command="{Binding SaveCommand}"
+                CommandParameter="{x:Static local:SaveType.Text}"
                 Content="Save">
                 <xctk:SplitButton.DropDownContent>
                     <StackPanel>
