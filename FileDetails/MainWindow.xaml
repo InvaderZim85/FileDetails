@@ -11,8 +11,6 @@
     Height="330"
     MinWidth="440"
     MinHeight="330"
-    MaxWidth="440"
-    MaxHeight="330"
     Loaded="MainWindow_OnLoaded"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -197,6 +195,14 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
+            <Button
+                Grid.Column="0"
+                Width="125"
+                Margin="3"
+                HorizontalAlignment="Left"
+                Command="{Binding CompareCommand}"
+                Content="Compare hash values"
+                Visibility="{Binding IsFile, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <xctk:SplitButton
                 Grid.Column="1"
                 Width="70"
@@ -244,22 +250,5 @@
                 Command="{Binding CloseCommand}"
                 Content="Close" />
         </Grid>
-
-        <!--<StackPanel
-            Grid.Row="9"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            FlowDirection="RightToLeft"
-            Orientation="Horizontal">
-            <xctk:SplitButton
-                Width="70"
-                Margin="3"
-                Content="Save" />
-            <Button
-                Width="70"
-                Margin="3"
-                Command="{Binding SaveCommand}"
-                Content="Save" />
-        </StackPanel>-->
     </Grid>
 </Window>

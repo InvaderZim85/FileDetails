@@ -5,7 +5,7 @@
 
 - [General](#general)
 - [Installation](#installation)
-    - [Step by step](#step-by-step)
+    - [Regedit](#regedit)
     - [Registry file](#registry-file)
         - [Registry file for the file menu](#registry-file-for-the-file-menu)
         - [Registry file for the directory menu](#registry-file-for-the-directory-menu)
@@ -15,17 +15,35 @@
 ## General
 The program *FileDetails* is a small tool to show informations about a file or a directory via the windows context menu (shell).
 
+**File**
+
 ![Context menu](images/004.png)
 
 ![Details](images/009.png)
 
+When you're showing the details for a file you can also compare the hash values. For this click on the *Compare hash values* button (bottom left)
+
+![Compare](images/010.png)
+
+**Directory**
+
+![Context menu dir](images/005.png)
+
+![Details dir](images/011.png)
+
+
+
+
+
 ## Installation
 When you've compiled the project you can copy the exe to any folder you want. To use the program via the windows context menu (shell) you have to add two entries to the registry.
 
-### Step by step
+### Regedit
+> **Note**: You need administrator privileges to open the *Registry Editor*
+
 To add a new entry you've to do the following:
 1. Open the windows registry:
-    1. Press the windows key or click on the symbol in the task bar
+    1. Press the windows key (keyboard) or click on the symbol in the task bar
     2. Type `regedit` 
 
        ![regedit](images/001.png)
@@ -66,32 +84,26 @@ To add a new entry you've to do the following:
 If you don't want to perform all the above steps you can create two small files to add the values directly.
 
 #### Registry file for the file menu
-Create a new empty text file and copy the following. Save the file with the exteions `reg` (e.G. *FileDetailsInstall.reg*)
+Create a new empty text file and copy the following. Save the file with the extension `reg` (e.G. *FileDetailsInstall.reg*)
 ```
 Windows Registry Editor Version 5.00
 
-[HKEY_CLASSES_ROOT\*\shell\FileDetails]
+[HKEY_CLASSES_ROOT\*\shell\Show details]
 
-[HKEY_CLASSES_ROOT\*\shell\FileDetails\command]
+[HKEY_CLASSES_ROOT\*\shell\Show details\command]
 @="PathToTheExe %1"
 ```
 
-**Example**
-```
-Windows Registry Editor Version 5.00
-
-[HKEY_CLASSES_ROOT\*\shell\FileDetails]
-
-[HKEY_CLASSES_ROOT\*\shell\FileDetails\command]
-@="D:\\Programs\\FileDetails\\FileDetails.exe %1"
-```
+> **Note**: You have to change the path to the exe
 
 #### Registry file for the directory menu
 ```
 Windows Registry Editor Version 5.00
 
-[HKEY_CLASSES_ROOT\Directory\shell\FileDetails]
+[HKEY_CLASSES_ROOT\Directory\shell\Show details]
 
-[HKEY_CLASSES_ROOT\Directory\shell\FileDetails\command]
+[HKEY_CLASSES_ROOT\Directory\shell\Show details\command]
 @="PathToTheExe %1"
 ```
+
+> **Note**: You have to change the path to the exe

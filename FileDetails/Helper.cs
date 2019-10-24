@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FileDetails
 {
@@ -34,7 +36,7 @@ namespace FileDetails
         /// </summary>
         /// <param name="file">The file</param>
         /// <returns>the hash value</returns>
-        public static (string md5, string sha1, string sha256) GetHash(FileInfo file)
+        public static async Task<(string md5, string sha1, string sha256)> GetHash(FileInfo file)
         {
             if (file == null)
                 return ("", "", "");
@@ -46,15 +48,13 @@ namespace FileDetails
 
             try
             {
-                using (var stream = File.OpenRead(file.FullName))
-                {
-                    var md5 = GetMd5Hash(stream);
-                    var sha1 = GetSha1Hash(stream);
-                    var sha256 = GetSha256Hash(stream);
+                var fileBytes = await Task.Run(() => File.ReadAllBytes(file.FullName));
 
-                    return (ConvertToString(md5), ConvertToString(sha1),
-                        ConvertToString(sha256));
-                }
+                var md5 = GetMd5Hash(fileBytes);
+                var sha1 = GetSha1Hash(fileBytes);
+                var sha256 = GetSha256Hash(fileBytes);
+
+                return (ConvertToString(md5), ConvertToString(sha1), ConvertToString(sha256));
             }
             catch
             {
@@ -63,41 +63,41 @@ namespace FileDetails
         }
 
         /// <summary>
-        /// Computes the SHA-256 hash for the given stream
+        /// Computes the MD5 hash for the given stream
         /// </summary>
-        /// <param name="stream">The file stream</param>
+        /// <param name="byteArray">The byte array of the file</param>
         /// <returns>The hash bytes</returns>
-        private static byte[] GetMd5Hash(Stream stream)
+        private static byte[] GetMd5Hash(byte[] byteArray)
         {
             using (var md5 = MD5.Create())
             {
-                return md5.ComputeHash(stream);
+                return md5.ComputeHash(byteArray);
             }
         }
 
         /// <summary>
-        /// Computes the SHA-256 hash for the given stream
+        /// Computes the SHA1 hash for the given stream
         /// </summary>
-        /// <param name="stream">The file stream</param>
+        /// <param name="byteArray">The byte array of the file</param>
         /// <returns>The hash bytes</returns>
-        private static byte[] GetSha1Hash(Stream stream)
+        private static byte[] GetSha1Hash(byte[] byteArray)
         {
-            using (var sha = new SHA1Managed())
+            using (var sha = SHA1.Create())
             {
-                return sha.ComputeHash(stream);
+                return sha.ComputeHash(byteArray);
             }
         }
 
         /// <summary>
-        /// Computes the SHA-256 hash for the given stream
+        /// Computes the SHA256 hash for the given stream
         /// </summary>
-        /// <param name="stream">The file stream</param>
+        /// <param name="byteArray">The byte array of the file</param>
         /// <returns>The hash bytes</returns>
-        private static byte[] GetSha256Hash(Stream stream)
+        private static byte[] GetSha256Hash(byte[] byteArray)
         {
-            using (var sha = new SHA256Managed())
+            using (var sha = SHA256.Create())
             {
-                return sha.ComputeHash(stream);
+                return sha.ComputeHash(byteArray);
             }
         }
 

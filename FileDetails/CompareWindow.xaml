@@ -1,0 +1,96 @@
+﻿<Window
+    x:Class="FileDetails.CompareWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FileDetails"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Compare hash values"
+    Width="550"
+    Height="170"
+    Loaded="CompareWindow_OnLoaded"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <local:CompareWindowViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            Content="Hash type:" />
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="1"
+            Orientation="Horizontal">
+            <RadioButton
+                Margin="3"
+                Content="MD5"
+                IsChecked="{Binding Md5}" />
+            <RadioButton
+                Margin="3"
+                Content="SHA1"
+                IsChecked="{Binding Sha1}" />
+            <RadioButton
+                Margin="3"
+                Content="SHA-256"
+                IsChecked="{Binding Sha256}" />
+        </StackPanel>
+
+        <Label
+            Grid.Row="1"
+            Grid.Column="0"
+            Content="File hash:" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="3"
+            IsReadOnly="True"
+            Text="{Binding HashValue}" />
+
+        <Label
+            Grid.Row="2"
+            Grid.Column="0"
+            Content="Compare with:" />
+        <TextBox
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="3"
+            Text="{Binding CompareValue, UpdateSourceTrigger=PropertyChanged}"
+            TextChanged="TextBoxCompareValue_TextChanged" />
+
+        <Label
+            Grid.Row="3"
+            Grid.Column="0"
+            Content="Result:" />
+        <Label
+            Grid.Row="3"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            Content="{Binding Info}"
+            Foreground="{Binding InfoColor}" />
+
+        <Button
+            Grid.Row="5"
+            Grid.Column="1"
+            Width="50"
+            Margin="3"
+            HorizontalAlignment="Right"
+            Click="ButtonClose_Click"
+            Content="Close" />
+    </Grid>
+</Window>

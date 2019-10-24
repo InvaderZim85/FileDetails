@@ -105,7 +105,7 @@ namespace FileDetails
         /// <summary>
         /// Backing field for <see cref="Md5"/>
         /// </summary>
-        private string _md5;
+        private string _md5 = "Loading...";
 
         /// <summary>
         /// Gets or sets the MD5 hash value
@@ -119,7 +119,7 @@ namespace FileDetails
         /// <summary>
         /// Backing field for <see cref="Sha1"/>
         /// </summary>
-        private string _sha1;
+        private string _sha1 = "Loading...";
 
         /// <summary>
         /// Gets or sets the SHA1 hash value
@@ -133,7 +133,7 @@ namespace FileDetails
         /// <summary>
         /// Backing field for <see cref="Sha256"/>
         /// </summary>
-        private string _sha256;
+        private string _sha256 = "Loading...";
 
         /// <summary>
         /// Gets or sets the SHA-256 hash value
@@ -163,6 +163,20 @@ namespace FileDetails
             set => SetField(ref _info, value);
         }
 
+        /// <summary>
+        /// Backing field for <see cref="CompareButtonEnabled"/>
+        /// </summary>
+        private bool _compareButtonEnabled;
+
+        /// <summary>
+        /// Gets or sets the value which indicates if the compare button is enabled
+        /// </summary>
+        public bool CompareButtonEnabled
+        {
+            get => _compareButtonEnabled;
+            set => SetField(ref _compareButtonEnabled, value);
+        }
+
 
         /// <summary>
         /// Sets the file
@@ -175,7 +189,6 @@ namespace FileDetails
 
             IsDirectory = Helper.IsDirectory(path);
 
-            (string size, string count) result;
             if (IsDirectory)
             {
                 _directory = new DirectoryInfo(path);
@@ -184,10 +197,11 @@ namespace FileDetails
             {
                 _file = new FileInfo(path);
 
-                var (md5, sha1, sha256) = Helper.GetHash(_file);
+                var (md5, sha1, sha256) = await Helper.GetHash(_file);
                 Md5 = md5;
                 Sha1 = sha1;
                 Sha256 = sha256;
+                CompareButtonEnabled = true;
             }
 
             var properties = Helper.GetProperties(this, Helper.PropertyAccessType.Read);
@@ -196,7 +210,7 @@ namespace FileDetails
                 OnPropertyChanged(property);
             }
 
-
+            (string size, string count) result;
             if (IsDirectory)
             {
                 result = await Task.Run(() => Helper.GetSizeFileCount(_directory));
@@ -224,6 +238,11 @@ namespace FileDetails
         /// The command to close the window
         /// </summary>
         public ICommand CloseCommand => new DelegateCommand(() => Application.Current.Shutdown());
+
+        /// <summary>
+        /// The command to open the compare window
+        /// </summary>
+        public ICommand CompareCommand => new DelegateCommand(OpenCompareWindow);
 
         /// <summary>
         /// Copies the data to the clipboard
@@ -332,6 +351,15 @@ namespace FileDetails
                 _infoTimer.Stop();
                 Info = "";
             };
+        }
+
+        /// <summary>
+        /// The command to open the compare window
+        /// </summary>
+        private void OpenCompareWindow()
+        {
+            var window = new CompareWindow((Md5, Sha1, Sha256));
+            window.ShowDialog();
         }
     }
 }
