@@ -33,7 +33,7 @@ When you're showing the details for a file you can also compare the hash values.
 
 ![Details dir](images/011.png)
 
-
+You can also save the details into a file (text of markdown) or copy them to the clipboard (text or markdown)
 
 ## Installation
 When you've compiled the project you can copy the exe to any folder you want. To use the program via the windows context menu (shell) you have to add two entries to the registry.
