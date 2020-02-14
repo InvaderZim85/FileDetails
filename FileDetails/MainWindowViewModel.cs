@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -177,6 +180,33 @@ namespace FileDetails
             set => SetField(ref _compareButtonEnabled, value);
         }
 
+        /// <summary>
+        /// Backing field for <see cref="ExportTypeList"/>
+        /// </summary>
+        private ObservableCollection<TextValueItem> _exportTypeList;
+
+        /// <summary>
+        /// Gets or sets the list with the export types
+        /// </summary>
+        public ObservableCollection<TextValueItem> ExportTypeList
+        {
+            get => _exportTypeList;
+            set => SetField(ref _exportTypeList, value);
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="TextValueItem"/>
+        /// </summary>
+        private TextValueItem _selectedExportType;
+
+        /// <summary>
+        /// Gets or sets the selected text value
+        /// </summary>
+        public TextValueItem SelectedExportType
+        {
+            get => _selectedExportType;
+            set => SetField(ref _selectedExportType, value);
+        }
 
         /// <summary>
         /// Sets the file
@@ -186,6 +216,8 @@ namespace FileDetails
         {
             if (string.IsNullOrEmpty(path))
                 return;
+
+            InitComboBox();
 
             IsDirectory = Helper.IsDirectory(path);
 
@@ -225,14 +257,26 @@ namespace FileDetails
         }
 
         /// <summary>
+        /// Init the combobox
+        /// </summary>
+        private void InitComboBox()
+        {
+            var tmpList = (from Helper.ExportType type in Enum.GetValues(typeof(Helper.ExportType))
+                select new TextValueItem((int) type, type.ToString(), type)).ToList();
+
+            ExportTypeList = new ObservableCollection<TextValueItem>(tmpList);
+            SelectedExportType = ExportTypeList.FirstOrDefault(f => f.Id == 0);
+        }
+
+        /// <summary>
         /// The command to copy the data to the clipboard
         /// </summary>
-        public ICommand CopyCommand => new RelayCommand<SaveType>(CopyToClipboard);
+        public ICommand CopyCommand => new DelegateCommand(CopyToClipboard);
         
         /// <summary>
         /// The command to save the data
         /// </summary>
-        public ICommand SaveCommand => new RelayCommand<SaveType>(SaveData);
+        public ICommand SaveCommand => new DelegateCommand(SaveData);
 
         /// <summary>
         /// The command to close the window
@@ -247,31 +291,32 @@ namespace FileDetails
         /// <summary>
         /// Copies the data to the clipboard
         /// </summary>
-        /// <param name="type">The type of the file</param>
-        private void CopyToClipboard(SaveType type)
+        private void CopyToClipboard()
         {
-            Clipboard.SetText(CreateText(type));
+            Clipboard.SetText(CreateText());
             ShowInfo();
         }
 
         /// <summary>
         /// Saves the data into a file
         /// </summary>
-        /// <param name="type">The type of the file</param>
-        private void SaveData(SaveType type)
+        private void SaveData()
         {
+            if (!(SelectedExportType?.Value is Helper.ExportType type))
+                return;
+
             var dialog = new SaveFileDialog
             {
                 FileName = $"{FileName.Replace(" ", "_")}-Details",
-                Filter = type == SaveType.Markdown ? "Markdown (*.md)|*.md|All (*.*)|*.*" : "Text (*.txt)|*.txt|All (*.*)|*.*",
-                DefaultExt = type == SaveType.Markdown ? ".md" : ".txt"
+                Filter = type == Helper.ExportType.Markdown ? "Markdown (*.md)|*.md|All (*.*)|*.*" : "Text (*.txt)|*.txt|All (*.*)|*.*",
+                DefaultExt = type == Helper.ExportType.Markdown ? ".md" : ".txt"
             };
 
             if (dialog.ShowDialog() == true)
             {
                 try
                 {
-                    File.WriteAllText(dialog.FileName, CreateText(type));
+                    File.WriteAllText(dialog.FileName, CreateText());
 
                     MessageBox.Show("File saved successfully.", "Save", MessageBoxButton.OK,
                         MessageBoxImage.Information);
@@ -287,13 +332,15 @@ namespace FileDetails
         /// <summary>
         /// Creates the text for the file / clipboard
         /// </summary>
-        /// <param name="type">The type of the file</param>
         /// <returns>The string with the data</returns>
-        private string CreateText(SaveType type)
+        private string CreateText()
         {
+            if (!(SelectedExportType?.Value is Helper.ExportType type))
+                return "";
+
             var sb = new StringBuilder();
 
-            if (type == SaveType.Text)
+            if (type == Helper.ExportType.Text)
             {
                 sb.AppendLine($"FileName: {FileName}");
                 sb.AppendLine($"Path: {Path}");
@@ -323,7 +370,7 @@ namespace FileDetails
                     sb.AppendLine($"| Files | {FileCount} |");
                 sb.AppendLine($"| Creation date | {CreationDate} |");
                 sb.AppendLine($"| Last write date | {WriteDate} |");
-                sb.AppendLine($" |Last access date | {AccessDate} |");
+                sb.AppendLine($"| Last access date | {AccessDate} |");
                 if (IsFile)
                 {
                     sb.AppendLine($"| MD5 hash | {Md5} |");

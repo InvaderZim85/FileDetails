@@ -4,14 +4,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:FileDetails"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     Title="File details"
-    Width="440"
-    Height="330"
+    Width="600"
+    Height="410"
     MinWidth="440"
     MinHeight="330"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{materialDesign:MaterialDesignFont}"
     Loaded="MainWindow_OnLoaded"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.DataContext>
@@ -34,7 +42,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -190,11 +198,14 @@
             Grid.Column="0"
             Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
+
             <Button
                 Grid.Column="0"
                 Width="125"
@@ -203,48 +214,33 @@
                 Command="{Binding CompareCommand}"
                 Content="Compare hash values"
                 Visibility="{Binding IsFile, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <xctk:SplitButton
+
+            <Rectangle
                 Grid.Column="1"
+                Width="1"
+                Margin="3"
+                VerticalAlignment="Stretch"
+                Fill="LightGray" />
+
+            <ComboBox
+                Grid.Column="2"
+                Margin="3"
+                ItemsSource="{Binding ExportTypeList}"
+                SelectedItem="{Binding SelectedExportType}" />
+            <Button
+                Grid.Column="3"
                 Width="70"
                 Margin="3"
                 Command="{Binding CopyCommand}"
-                CommandParameter="{x:Static local:SaveType.Text}"
-                Content="Copy">
-                <xctk:SplitButton.DropDownContent>
-                    <StackPanel>
-                        <MenuItem
-                            Command="{Binding CopyCommand}"
-                            CommandParameter="{x:Static local:SaveType.Text}"
-                            Header="Copy as text" />
-                        <MenuItem
-                            Command="{Binding CopyCommand}"
-                            CommandParameter="{x:Static local:SaveType.Markdown}"
-                            Header="Copy as markdown" />
-                    </StackPanel>
-                </xctk:SplitButton.DropDownContent>
-            </xctk:SplitButton>
-            <xctk:SplitButton
-                Grid.Column="2"
+                Content="Copy" />
+            <Button
+                Grid.Column="4"
                 Width="70"
                 Margin="3"
                 Command="{Binding SaveCommand}"
-                CommandParameter="{x:Static local:SaveType.Text}"
-                Content="Save">
-                <xctk:SplitButton.DropDownContent>
-                    <StackPanel>
-                        <MenuItem
-                            Command="{Binding SaveCommand}"
-                            CommandParameter="{x:Static local:SaveType.Text}"
-                            Header="Save as txt file" />
-                        <MenuItem
-                            Command="{Binding SaveCommand}"
-                            CommandParameter="{x:Static local:SaveType.Markdown}"
-                            Header="Save as md file" />
-                    </StackPanel>
-                </xctk:SplitButton.DropDownContent>
-            </xctk:SplitButton>
+                Content="Save" />
             <Button
-                Grid.Column="3"
+                Grid.Column="5"
                 Width="70"
                 Margin="3"
                 Command="{Binding CloseCommand}"

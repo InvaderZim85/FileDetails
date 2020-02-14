@@ -7,8 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Compare hash values"
     Width="550"
-    Height="170"
+    Height="200"
     Loaded="CompareWindow_OnLoaded"
+    ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.DataContext>
@@ -84,10 +85,15 @@
             Content="{Binding Info}"
             Foreground="{Binding InfoColor}" />
 
+        <Separator
+            Grid.Row="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="3" />
+
         <Button
             Grid.Row="5"
             Grid.Column="1"
-            Width="50"
             Margin="3"
             HorizontalAlignment="Right"
             Click="ButtonClose_Click"

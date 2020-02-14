@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FileDetails
@@ -29,6 +28,22 @@ namespace FileDetails
             /// Only properties which can be write
             /// </summary>
             Write = 2
+        }
+
+        /// <summary>
+        /// The different export types
+        /// </summary>
+        public enum ExportType
+        {
+            /// <summary>
+            /// Save the data as markdown file
+            /// </summary>
+            Markdown,
+
+            /// <summary>
+            /// Save the data as text file
+            /// </summary>
+            Text
         }
 
         /// <summary>
