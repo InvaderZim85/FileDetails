@@ -216,7 +216,7 @@ namespace FileDetails
                 case var _ when size < 1024:
                     return $"{size} Bytes";
                 case var _ when size >= 1024 && size < Math.Pow(1024, 2):
-                    return $"{size / 1024:N2} KB";
+                    return $"{size / 1024d:N2} KB";
                 case var _ when size >= Math.Pow(1024, 2) && size < Math.Pow(1024, 3):
                     return $"{size / Math.Pow(1024, 2):N2} MB";
                 case var _ when size >= Math.Pow(1024, 3):
