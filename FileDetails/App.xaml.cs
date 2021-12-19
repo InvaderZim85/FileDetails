@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Windows;
+using FileDetails.Ui;
 
 namespace FileDetails
 {
@@ -10,8 +10,10 @@ namespace FileDetails
     public partial class App : Application
     {
         /// <summary>
-        /// Occurs when the application is started
+        /// Occurs when the application was started
         /// </summary>
+        /// <param name="sender">The <see cref="App"/></param>
+        /// <param name="e">The startup arguments</param>
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
             try
@@ -19,9 +21,9 @@ namespace FileDetails
                 if (e.Args.Length <= 0)
                     return;
 
-                var path = GetPath(e.Args);
+                var path = Helper.GetPath(e.Args);
 
-                if (!CanStart(path))
+                if (!Helper.CanStart(path))
                 {
                     MessageBox.Show($"Can't read the given path: {path}", "Error", MessageBoxButton.OK,
                         MessageBoxImage.Error);
@@ -33,39 +35,9 @@ namespace FileDetails
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error has occured:\r\n{ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBox.Show($"An error has occurred:\r\n{ex.Message}", "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
-        }
-
-        /// <summary>
-        /// Gets the path
-        /// </summary>
-        /// <param name="args">The arguments</param>
-        /// <returns>The path</returns>
-        private string GetPath(string[] args)
-        {
-            var result = "";
-
-            foreach (var entry in args)
-            {
-                result += $"{entry} ";
-            }
-
-            return result.Trim();
-        }
-
-        /// <summary>
-        /// Checks if the given path is valid
-        /// </summary>
-        /// <param name="path">The path</param>
-        /// <returns>true when the path is valid, otherwise false</returns>
-        private bool CanStart(string path)
-        {
-            if (File.Exists(path) || Directory.Exists(path))
-                return true;
-
-            return false;
         }
     }
 }

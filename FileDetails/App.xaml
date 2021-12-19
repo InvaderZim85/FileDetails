@@ -5,21 +5,43 @@
     xmlns:local="clr-namespace:FileDetails"
     Startup="App_OnStartup">
     <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Grey.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Teal.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+        <Style x:Key="Header" TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Fonts/#Roboto" />
+            <Setter Property="FontStyle" Value="Italic" />
+            <Setter Property="Foreground" Value="#5cadff" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
 
-            <Style TargetType="{x:Type Label}">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
-            <Style TargetType="{x:Type RadioButton}">
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
-        </ResourceDictionary>
+        <Style x:Key="Separator" TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Fonts/#Roboto" />
+            <Setter Property="Foreground" Value="#5cadff" />
+            <Setter Property="FontStyle" Value="Italic" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Fonts/#Roboto" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Height" Value="23" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Background" Value="#2E2E2E" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style TargetType="{x:Type Separator}">
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="BorderBrush" Value="#5cadff" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
     </Application.Resources>
 </Application>

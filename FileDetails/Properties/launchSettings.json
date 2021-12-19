@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FileDetails": {
+      "commandName": "Project",
+      "commandLineArgs": "\"E:\\Proggen\\Appz\\FileDetails - Kopie\\InstallFileCommand.reg\""
+    }
+  }
+}
