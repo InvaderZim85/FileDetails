@@ -3,45 +3,127 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:FileDetails"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     Startup="App_OnStartup">
     <Application.Resources>
-        <Style x:Key="Header" TargetType="{x:Type Label}">
-            <Setter Property="FontFamily" Value="Fonts/#Roboto" />
-            <Setter Property="FontStyle" Value="Italic" />
-            <Setter Property="Foreground" Value="#5cadff" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive!  -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <!--  Theme setting  -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.cyan.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="Separator" TargetType="{x:Type Label}">
-            <Setter Property="FontFamily" Value="Fonts/#Roboto" />
-            <Setter Property="Foreground" Value="#5cadff" />
-            <Setter Property="FontStyle" Value="Italic" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
-        </Style>
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
 
-        <Style TargetType="{x:Type Label}">
-            <Setter Property="FontFamily" Value="Fonts/#Roboto" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
-        </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
 
-        <Style TargetType="{x:Type TextBox}">
-            <Setter Property="Height" Value="23" />
-            <Setter Property="Margin" Value="3" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Background" Value="#2E2E2E" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground" Value="White" />
-        </Style>
+            <Style x:Key="ItemKey" TargetType="{x:Type Label}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
 
-        <Style TargetType="{x:Type Separator}">
-            <Setter Property="Margin" Value="3" />
-            <Setter Property="BorderBrush" Value="#5cadff" />
-            <Setter Property="BorderThickness" Value="1" />
-        </Style>
+            <Style x:Key="ItemValue" TargetType="{x:Type Label}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="ItemHint" TargetType="{x:Type Label}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="Foreground" Value="LightGray" />
+            </Style>
+
+            <Style x:Key="BorderStyle" TargetType="{x:Type Border}">
+                <Setter Property="Margin" Value="3" />
+                <Setter Property="BorderBrush" Value="LightGray" />
+                <Setter Property="BorderThickness" Value="1" />
+            </Style>
+
+            <Style BasedOn="{StaticResource MahApps.Styles.DataGrid}" TargetType="{x:Type DataGrid}">
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="CanUserDeleteRows" Value="False" />
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="GridLinesVisibility" Value="Horizontal" />
+                <Setter Property="Margin" Value="3" />
+            </Style>
+
+            <Style TargetType="{x:Type Separator}">
+                <Setter Property="Margin" Value="3" />
+            </Style>
+
+            <Style x:Key="VerticalSplitter" TargetType="{x:Type GridSplitter}">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="Width" Value="3" />
+                <Setter Property="ShowsPreview" Value="True" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <Style x:Key="HorizontalSplitter" TargetType="{x:Type GridSplitter}">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="Height" Value="3" />
+                <Setter Property="ShowsPreview" Value="True" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <Style x:Key="Headline" TargetType="{x:Type Label}">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="FontStyle" Value="Italic" />
+                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.AccentBase}" />
+            </Style>
+
+            <Style
+                x:Key="HeadlineBlock"
+                BasedOn="{StaticResource MahApps.Styles.TextBlock}"
+                TargetType="{x:Type TextBlock}">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="3" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="FontStyle" Value="Italic" />
+                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.AccentBase}" />
+            </Style>
+
+            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="3" />
+            </Style>
+
+            <Style BasedOn="{StaticResource MahApps.Styles.TextBox}" TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="3" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <Style
+                x:Key="TextBoxFilter"
+                BasedOn="{StaticResource MahApps.Styles.TextBox}"
+                TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="3" />
+                <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="True" />
+                <Style.Triggers>
+                    <Trigger Property="mah:TextBoxHelper.HasText" Value="False">
+                        <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="False" />
+                    </Trigger>
+                    <Trigger Property="mah:TextBoxHelper.HasText" Value="True">
+                        <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="True" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style BasedOn="{StaticResource MahApps.Styles.ComboBox}" TargetType="{x:Type ComboBox}">
+                <Setter Property="Margin" Value="3" />
+            </Style>
+
+            <Style BasedOn="{StaticResource MahApps.Styles.CheckBox}" TargetType="{x:Type CheckBox}">
+                <Setter Property="Margin" Value="3" />
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

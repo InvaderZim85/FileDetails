@@ -1,0 +1,335 @@
+﻿<mah:MetroWindow
+    x:Class="FileDetails.Ui.View.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModel="clr-namespace:FileDetails.Ui.ViewModel"
+    Title="File Details"
+    Width="600"
+    Height="480"
+    mah:DialogParticipation.Register="{Binding}"
+    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+    BorderThickness="1"
+    Loaded="MainWindow_OnLoaded"
+    ResizeMode="NoResize"
+    ShowMaxRestoreButton="False"
+    ShowMinButton="False"
+    TitleCharacterCasing="Normal"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel />
+    </Window.DataContext>
+
+    <DockPanel LastChildFill="True">
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem Content="(c) 2023 by InvaderZim" />
+        </StatusBar>
+
+        <TabControl>
+            <TabItem Header="Details">
+                <Border Style="{StaticResource BorderStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <iconPacks:PackIconMaterial
+                            Grid.Row="0"
+                            Grid.RowSpan="11"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Width="200"
+                            Height="200"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="#2e2e2e"
+                            Kind="ChemicalWeapon" />
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Content="Values"
+                            Style="{StaticResource Headline}" />
+
+                        <Separator
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2" />
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Content="Name:" />
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            IsReadOnly="True"
+                            Text="{Binding File.Name, Mode=OneWay}" />
+
+                        <Label
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Content="Path:" />
+                        <TextBox
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            IsReadOnly="True"
+                            Text="{Binding File.Path, Mode=OneWay}" />
+
+                        <Label
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Content="Size:" />
+                        <TextBox
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            IsReadOnly="True"
+                            Text="{Binding File.Size, Mode=OneWay}" />
+
+                        <Label
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Content="Creation date / time:" />
+                        <TextBox
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            IsReadOnly="True"
+                            Text="{Binding File.CreationDateTime, Mode=OneWay}" />
+
+                        <Label
+                            Grid.Row="6"
+                            Grid.Column="0"
+                            Content="Last write:" />
+                        <TextBox
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            IsReadOnly="True"
+                            Text="{Binding File.LastWriteDateTime, Mode=OneWay}" />
+
+                        <Label
+                            Grid.Row="7"
+                            Grid.Column="0"
+                            Content="Last access:" />
+                        <TextBox
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            IsReadOnly="True"
+                            Text="{Binding File.LastAccessDateTime, Mode=OneWay}" />
+
+                        <Separator
+                            Grid.Row="8"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2" />
+
+                        <StackPanel
+                            Grid.Row="9"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            FlowDirection="RightToLeft"
+                            Orientation="Horizontal">
+                            <Button
+                                Width="60"
+                                Command="{Binding CopyDetailsCommand}"
+                                Content="Copy" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </TabItem>
+            <TabItem Header="Hash values">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <iconPacks:PackIconMaterial
+                        Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Width="200"
+                        Height="200"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="#2e2e2e"
+                        Kind="ChemicalWeapon" />
+
+                    <Border Grid.Row="0" Style="{StaticResource BorderStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="65" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Content="Values"
+                                Style="{StaticResource Headline}" />
+                            <Separator
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2" />
+
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Content="MD5:" />
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                IsReadOnly="True"
+                                Text="{Binding File.HashMd5, Mode=OneWay}" />
+
+                            <Label
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Content="SHA1:" />
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                IsReadOnly="True"
+                                Text="{Binding File.HashSha1, Mode=OneWay}" />
+
+                            <Label
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Content="SHA-256:" />
+                            <TextBox
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                IsReadOnly="True"
+                                Text="{Binding File.HashSha256, Mode=OneWay}" />
+
+                            <Label
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Content="SHA-384:" />
+                            <TextBox
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                IsReadOnly="True"
+                                Text="{Binding File.HashSha384, Mode=OneWay}" />
+
+                            <Label
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Content="SHA-512:" />
+                            <TextBox
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                IsReadOnly="True"
+                                Text="{Binding File.HashSha512, Mode=OneWay}" />
+
+                            <Separator
+                                Grid.Row="7"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2" />
+
+                            <StackPanel
+                                Grid.Row="8"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                FlowDirection="RightToLeft"
+                                Orientation="Horizontal">
+                                <Button
+                                    Width="60"
+                                    Command="{Binding CopyHashValuesCommand}"
+                                    Content="Copy" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Style="{StaticResource BorderStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="65" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="32" />
+                            </Grid.RowDefinitions>
+
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Content="Compare"
+                                Style="{StaticResource Headline}" />
+                            <Separator
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2" />
+
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Content="Type:" />
+                            <ComboBox
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                ItemsSource="{Binding HashTypes}"
+                                SelectedItem="{Binding SelectedHashType}" />
+
+                            <Label
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Content="Input:" />
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Style="{StaticResource TextBoxFilter}"
+                                Text="{Binding HashInput, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <Label
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Content="Result:" />
+                            <Label
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Content="{Binding HashCompareResult}"
+                                Foreground="{Binding CompareResultColor}"
+                                Style="{StaticResource ItemValue}" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</mah:MetroWindow>

@@ -1,43 +1,30 @@
-﻿using System;
+﻿using FileDetails.Ui.View;
+using System.Linq;
 using System.Windows;
-using FileDetails.Ui;
 
-namespace FileDetails
+namespace FileDetails;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Occurs when the application starts
     /// </summary>
-    public partial class App : Application
+    /// <param name="sender">The <see cref="App"/></param>
+    /// <param name="e">The event arguments (contains the arguments)</param>
+    private void App_OnStartup(object sender, StartupEventArgs e)
     {
-        /// <summary>
-        /// Occurs when the application was started
-        /// </summary>
-        /// <param name="sender">The <see cref="App"/></param>
-        /// <param name="e">The startup arguments</param>
-        private void App_OnStartup(object sender, StartupEventArgs e)
-        {
-            try
-            {
-                if (e.Args.Length <= 0)
-                    return;
+        // Get the path
+        var path = e.Args.Any()
+            ? e.Args.Length == 1
+                ? e.Args.First()
+                : string.Join(" ", e.Args)
+            : string.Empty;
 
-                var path = Helper.GetPath(e.Args);
-
-                if (!Helper.CanStart(path))
-                {
-                    MessageBox.Show($"Can't read the given path: {path}", "Error", MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                    Current.Shutdown();
-                }
-
-                var mainWindow = new MainWindow(path);
-                mainWindow.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error has occurred:\r\n{ex.Message}", "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-        }
+        // Create the main window and show it
+        var mainWindow = new MainWindow(path);
+        mainWindow.Show();
     }
 }
