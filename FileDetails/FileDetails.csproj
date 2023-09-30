@@ -1,12 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <Version>23.274.4.1344</Version>
+    <FileVersion>23.274.4.1344</FileVersion>
+    <AssemblyVersion>23.274.4.1344</AssemblyVersion>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
-
+  <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
@@ -15,5 +20,4 @@
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
     <PackageReference Include="ZimLabs.TableCreator" Version="2.0.2" />
   </ItemGroup>
-
 </Project>

@@ -7,7 +7,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:FileDetails.Ui.ViewModel"
-    Title="File Details"
+    Title="{Binding WindowHeader}"
     Width="600"
     Height="480"
     mah:DialogParticipation.Register="{Binding}"
@@ -26,7 +26,7 @@
 
     <DockPanel LastChildFill="True">
         <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem Content="(c) 2023 by InvaderZim" />
+            <StatusBarItem Content="{Binding VersionInfo}" />
         </StatusBar>
 
         <TabControl>

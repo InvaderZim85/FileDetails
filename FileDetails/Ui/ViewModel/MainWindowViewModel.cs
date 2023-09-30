@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -51,6 +52,18 @@ internal partial class MainWindowViewModel : ViewModelBase
     /// </summary>
     [ObservableProperty]
     private SolidColorBrush _compareResultColor = new(Colors.White);
+
+    /// <summary>
+    /// Gets or sets the version info
+    /// </summary>
+    [ObservableProperty]
+    private string _versionInfo = $"\u00a9 {DateTime.Now.Year} by InvaderZim";
+
+    /// <summary>
+    /// Gets or sets the window header
+    /// </summary>
+    [ObservableProperty]
+    private string _windowHeader = "File Details";
 
     /// <summary>
     /// Occurs when the user changes the hash input value
@@ -135,6 +148,10 @@ internal partial class MainWindowViewModel : ViewModelBase
         });
 
         SelectedHashType = HashTypes.FirstOrDefault(f => f.Id == 1);
+
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        VersionInfo += $" - v{version}";
+        WindowHeader += $" - v{version}";
     }
 
     /// <summary>
