@@ -11,7 +11,7 @@
 <!-- /TOC -->
 
 ## General
-The program *FileDetails* is a small tool to show informations about a file or a directory via the windows context menu (shell).
+The program *FileDetails* is a small tool to show informations about a file via the windows context menu (shell).
 
 **File**
 
